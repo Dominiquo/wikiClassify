@@ -25,6 +25,7 @@ class Page(object):
 			r = requests.get(self.link)
 			self.doc = BeautifulSoup(r.content)
 			self.getLinks()
+			self.getWords()
 		except:
 			print "Unexpected error:", sys.exc_info()[0]
 
