@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import page
 import requests
-import sqlite3
 import unicodedata
 import sys
 
@@ -44,7 +43,7 @@ class Categories(object):
 				pageLink = pageTag.get('href')
 				strPage = pageLink.encode('ascii','ignore')
 				# check to make sure the page I'm adding to the subpages list is a valid wikipedia article
-				if page.isPage(self.base + strPage):
+				if page.isPage(strPage):
 					newPage = page.Page(strPage,self.depth)
 					self.subPages.append(newPage)
 

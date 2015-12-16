@@ -59,9 +59,16 @@ def main():
 			break
 
 	if not already_made:
-		catCount = raw_input("How many categories will you be using? ")
+		while True:
+			catCount = raw_input("How many categories will you be using? ")
+			try:
+				count = int(catCount)
+				break
+			except:
+				print "not a valid integer"
+
 		allCategoriesLinks = []
-		print 'Please give the input in the form \"/wiki/example_page\".'
+		print 'Please give the input in the form \"/wiki/Category:Example_category\".'
 		print 'If a category is not valid input or not recognized, it will be dropped by the classifier.'
 		for i in xrange(int(catCount)):
 			catLink = raw_input("enter your category: ")
@@ -77,7 +84,7 @@ def main():
 		print 'Prior probabilities are now stored in serialized files.'
 
 	while True:
-		checkPageLink = raw_input("In same format, give URL suffix of page you would like to classify: ")
+		checkPageLink = raw_input("In similar format, give URL suffix of page you would like to classify: ")
 		if page.isPage(checkPageLink):
 			break
 		else:
@@ -98,5 +105,5 @@ def main():
 
 
 if __name__ == "__main__":
-	# main()
-	tester()
+	main()
+	# tester()

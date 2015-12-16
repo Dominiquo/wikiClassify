@@ -7,11 +7,13 @@ import sqlite3
 import unicodedata
 import sys
 
+"""
+Creating a 
 
-def createClassifier(categoriesLinks):
+"""
+def createClassifier(categoriesLinks,max_depth=1):
 	allCategories = []
 	allCatsLinks = []
-	max_depth = 1
 	base = 'https://en.wikipedia.org'
 	key = []
 	keyDict = {}
