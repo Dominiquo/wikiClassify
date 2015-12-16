@@ -10,10 +10,27 @@ import sys
 """
 Creating a classifer based on the links from the leaf pages. 
 
+***INPUT***
+
+categoriesLinks: List of Strings. This is a list of the links that represent the categories we want to use as 
+					as our classification. Again, this is only the suffix of the full URL
+max_depth: Integer. How far do we want our crawling to actually traverse from these root nodes? Specify here, but 
+			be aware that the number of pages has the potential to grow exponentially with the depth.
+
+***OUTPUT***
+allCatsLinks: a list of strings that will be used as a reference to which row represents which cateogry page in the next return val
+
+occurMatrix: a nxm matrix where there are N valid given categories (N rows) and M different links that appear in the union of all the 
+			leaf pages of categories. Each i,j represents the number of occurence of a given link in that category
+
+totals: list of integers of length M that represets the total number of occurences of a link across all of the categoreies leaf pages 
+
+keyDict: a dictionary where the key is a string of the form "wiki/example_page" and the value is a number i 0<= i <= m i.e the value 
+		is the index in the matrix and total vector that represents the number of occurences of the key (link). 
 """
 def createClassifier(categoriesLinks,max_depth=1):
-	allCategories = []
-	allCatsLinks = []
+	allCategories = [] #will be used to store the categories types of the initial links
+	allCatsLinks = [] #basically a copy of the categoriesLinks, but we move over tho this list if any were invalid
 	base = 'https://en.wikipedia.org'
 	key = []
 	keyDict = {}
@@ -48,7 +65,33 @@ def createClassifier(categoriesLinks,max_depth=1):
 
 	return allCatsLinks,occurMatrix,totals,keyDict
 
+"""
+This classifier takes as input, the output of the prior probabilites generated in the createClassifier function therefore making it 
+easier to classify a page if the prior probabilites have already been serialized.
 
+***INPUT***
+classPage: Page type representing a wikipedia page that we want to classify
+
+allCatsLinks: a list of strings that will be used as a reference to which row represents which cateogry page in the next return val
+
+occurMatrix: a nxm matrix where there are N valid given categories (N rows) and M different links that appear in the union of all the 
+			leaf pages of categories. Each i,j represents the number of occurence of a given link in that category
+
+totals: list of integers of length M that represets the total number of occurences of a link across all of the categoreies leaf pages 
+
+keyDict: a dictionary where the key is a string of the form "wiki/example_page" and the value is a number i 0<= i <= m i.e the value 
+		is the index in the matrix and total vector that represents the number of occurences of the key (link). 
+
+epsilon: float that will be used to replace a zero in the product of the conditional probabilites. This should be tweaked depending on
+			the other inputs since it can cause the most issues. The goal is to make the epsilon small enough that it makes the 
+			probability less significant than the acutal strongest related page, but not too weak to zero out the number with a 
+			floating point error.
+
+***OUTPUT***
+distributions: a list of tuples where the first value in the tuple is the category and the second value is 
+				probability that the given page belongs to that category. 
+
+"""
 def naiveBayes(classPage,allCatsLinks,occurMatrix,totals,keyDict,epsilon=1e-2):
 	distribution = [1]*len(allCatsLinks)
 	for link in classPage.links:
