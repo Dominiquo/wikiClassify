@@ -8,7 +8,7 @@ import unicodedata
 import sys
 
 """
-Creating a 
+Creating a classifer based on the links from the leaf pages. 
 
 """
 def createClassifier(categoriesLinks,max_depth=1):
