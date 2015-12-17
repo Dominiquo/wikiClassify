@@ -50,7 +50,6 @@ def createClassifier(categoriesLinks,useLinks=True,max_depth=1):
 	totals = []
 	max_cat = 0
 	if useLinks:
-		print "performing naive bayes on links..."
 		for cat in allCategories:
 			cat.collectLeafPages()
 			catOccurences = [0]*max_cat
@@ -72,7 +71,6 @@ def createClassifier(categoriesLinks,useLinks=True,max_depth=1):
 		for row in occurMatrix:
 			row += [0]*(max_cat - len(row))
 	else:
-		print "performing naive bayes on words..."
 		for cat in allCategories:
 				cat.collectLeafPages()
 				catOccurences = [0]*max_cat
@@ -147,7 +145,6 @@ def naiveBayes(classPage,allCatsLinks,occurMatrix,totals,keyDict,useLinks,epsilo
 					liklihood = (val*num)/float(tot)
 					if liklihood != 0:
 						factor = liklihood
-						print word,"was on",classPage.link,"as well as ",allCatsLinks[i],'with liklihood',liklihood
 				distribution[i] *= factor
 			distribution = normalize(distribution)
 
