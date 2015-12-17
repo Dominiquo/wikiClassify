@@ -6,6 +6,9 @@ import requests
 import sqlite3
 import unicodedata
 import sys
+import math 
+
+
 
 """
 Creating a classifer based on the links from the leaf pages. 
@@ -47,6 +50,7 @@ def createClassifier(categoriesLinks,useLinks=True,max_depth=1):
 	totals = []
 	max_cat = 0
 	if useLinks:
+		print "performing naive bayes on links..."
 		for cat in allCategories:
 			cat.collectLeafPages()
 			catOccurences = [0]*max_cat
@@ -68,6 +72,7 @@ def createClassifier(categoriesLinks,useLinks=True,max_depth=1):
 		for row in occurMatrix:
 			row += [0]*(max_cat - len(row))
 	else:
+		print "performing naive bayes on words..."
 		for cat in allCategories:
 				cat.collectLeafPages()
 				catOccurences = [0]*max_cat
@@ -84,10 +89,10 @@ def createClassifier(categoriesLinks,useLinks=True,max_depth=1):
 							totals[index] += n
 				occurMatrix.append(catOccurences)
 
-			for row in occurMatrix:
-				row += [0]*(max_cat - len(row))
+		for row in occurMatrix:
+			row += [0]*(max_cat - len(row))
 
-	return allCatsLinks,occurMatrix,totals,keyDict
+	return allCatsLinks,occurMatrix,totals,keyDict,useLinks
 
 """
 This classifier takes as input, the output of the prior probabilites generated in the createClassifier function therefore making it 
@@ -116,21 +121,37 @@ distributions: a list of tuples where the first value in the tuple is the catego
 				probability that the given page belongs to that category. 
 
 """
-def naiveBayes(classPage,allCatsLinks,occurMatrix,totals,keyDict,epsilon=1e-1):
+def naiveBayes(classPage,allCatsLinks,occurMatrix,totals,keyDict,useLinks,epsilon=1e-4):
 	distribution = [1]*len(allCatsLinks)
-	for link in classPage.links:
-		for i in xrange(len(allCatsLinks)):
-			if link in keyDict:
-				index = keyDict[link]
-				val = occurMatrix[i][index]
-				tot = totals[index]
-				liklihood = val/float(tot)
-				if liklihood == 0:
-					distribution[i] *= epsilon
-				else:
-					distribution[i] *= liklihood
-			else:
-				distribution[i] *= epsilon
+	if useLinks:
+		for link in classPage.links:
+			for i in xrange(len(allCatsLinks)):
+				factor = epsilon
+				if link in keyDict:
+					index = keyDict[link]
+					val = occurMatrix[i][index]
+					tot = totals[index]
+					liklihood = val/float(tot)
+					if liklihood != 0:
+						factor = liklihood
+				distribution[i] *= factor
+				distribution = normalize(distribution)
+	else:
+		for word,num in classPage.words.iteritems():
+			for i in xrange(len(allCatsLinks)):
+				factor = epsilon
+				if word in keyDict:
+					index = keyDict[word]
+					val = occurMatrix[i][index]
+					tot = totals[index]
+					liklihood = (val*num)/float(tot)
+					if liklihood != 0:
+						factor = liklihood
+						print word,"was on",classPage.link,"as well as ",allCatsLinks[i],'with liklihood',liklihood
+				distribution[i] *= factor
+			distribution = normalize(distribution)
+
+
 	new_dist = normalize(distribution)
 	return [(allCatsLinks[i],new_dist[i]) for i in range(len(allCatsLinks))]
 
