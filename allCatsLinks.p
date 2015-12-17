@@ -1,0 +1,16 @@
+(lp0
+S'/wiki/Category:Rare_diseases'
+p1
+aS'/wiki/Category:Infectious_diseases'
+p2
+aS'/wiki/Category:Cancer'
+p3
+aS'/wiki/Category:Congenital_disorders'
+p4
+aS'/wiki/Category:Organs_(anatomy)'
+p5
+aS'/wiki/Category:Machine_learning_algorithms'
+p6
+aS'/wiki/Category:Medical_devices'
+p7
+a.
