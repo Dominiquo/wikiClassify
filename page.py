@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 import unicodedata
 import sys
+import re
+from nltk.corpus import stopwords
 
 
 """
@@ -35,6 +37,7 @@ class Page(object):
 	and the value is the number of occurences
 	"""
 	def getWords(self):
+		stops = set(set(stopwords.words('english')))
 		bodyContent = self.doc.find_all('div',id='bodyContent')
 		if len(bodyContent) != 1:
 			raise Exception("no body content")
@@ -44,10 +47,12 @@ class Page(object):
 		for item in contentList:
 			item = re.sub('[^a-zA-Z]+', '', item)
 			lowerItem = item.lower()
-			if lowerItem in self.words:
+			if (lowerItem not in stops) and (lowerItem in self.words):
 				self.words[lowerItem] += 1
-			else:
+			elif lowerItem not in stops:
 				self.words[lowerItem] = 1
+		if "" in self.words:
+			self.words.pop("")
 
 		return self.words
 
