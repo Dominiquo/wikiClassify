@@ -135,8 +135,8 @@ def main():
 
 
 if __name__ == "__main__":
-	# main()
-	generatePriorOnGivenWikiCategories(1,False)
+	main()
+	# generatePriorOnGivenWikiCategories(1,False)
 	KernelMethod = '/wiki/Kernel_methods_for_vector_output' #pulled from machine learning topics
 	tobacco = '/wiki/Tobacco' #pulled from cancer
 	neonatal = '/wiki/Neonatal_sepsis' #pulled from infectious diseases
