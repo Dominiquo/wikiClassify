@@ -3,7 +3,6 @@ import page
 from bs4 import BeautifulSoup
 import page
 import requests
-import sqlite3
 import unicodedata
 import sys
 import math 
